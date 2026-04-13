@@ -1,6 +1,3 @@
-/* TradeFlow SV — app.js (demo visual, sin backend) */
-
-/* ── AUTH CHECK ── */
 var CURRENT_USER = null;
 (function() {
   var stored = localStorage.getItem('tf_user');
@@ -12,7 +9,6 @@ var CURRENT_USER = null;
   document.getElementById('dash-date').textContent = new Date().toLocaleDateString('es-SV', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
 })();
 
-/* ── HELPERS ── */
 function fmt(n) { return Number(n).toLocaleString('es-SV'); }
 function fmtDate(d) { return d || '—'; }
 
@@ -49,7 +45,6 @@ function toast(msg, type) {
 function openModal(id)  { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
-/* ── GET MY SHIPMENTS ── */
 function getMyShipments() {
   var id = CURRENT_USER.id;
   if (CURRENT_USER.role === 'admin') {
@@ -60,7 +55,6 @@ function getMyShipments() {
   return DEMO_SHIPMENTS[id] || [];
 }
 
-/* ── NAVIGATION ── */
 var loaded = {};
 
 function showPage(name) {
@@ -92,9 +86,6 @@ function showSub(id, btn) {
   if (id === 'intel-dash'     && !loaded['idb']) { loaded['idb'] = 1; renderIntelDash(); }
 }
 
-/* ═══════════════════════════════
-   1. MI DASHBOARD
-═══════════════════════════════ */
 function loadMyDash() {
   var ships = getMyShipments();
   var counts = { held:0, review:0, transit:0, clear:0 };
@@ -127,7 +118,6 @@ function loadMyDash() {
 
   html += '<div class="grid-col-2">';
 
-  // Envios activos
   html += '<div class="card"><div class="card-head"><div class="card-title">Envios Activos</div><a href="#" onclick="showPage(\'mis-envios\')" style="font-size:11px;color:#888;text-decoration:none;font-family:\'Courier New\',monospace">Ver todos &rarr;</a></div><div class="card-body">';
   if (!ships.length) {
     html += '<div style="text-align:center;padding:24px;color:#888">Sin envios registrados. <button class="btn-primary" onclick="openModal(\'modal-add\')" style="margin-top:8px">Registrar envio</button></div>';
@@ -144,10 +134,7 @@ function loadMyDash() {
   }
   html += '</div></div>';
 
-  // Panel derecho
   html += '<div style="display:flex;flex-direction:column;gap:16px">';
-
-  // Costos
   html += '<div class="card"><div class="card-head"><div class="card-title">Costos Estimados</div><div class="card-meta">todos los envios</div></div><div class="card-body">';
   html += '<div class="cost-row"><span class="cost-row-label">Total envios activos</span><span class="cost-row-val">$' + fmt(totalCost) + '</span></div>';
   html += '<div class="cost-row"><span class="cost-row-label">Prom. por envio</span><span class="cost-row-val">$' + (ships.length ? fmt(Math.round(totalCost / ships.length)) : '0') + '</span></div>';
@@ -155,7 +142,6 @@ function loadMyDash() {
   html += '<div style="margin-top:8px;font-size:11px;color:#bbb;font-family:\'Courier New\',monospace">Estimado basado en tarifas promedio de mercado</div>';
   html += '</div></div>';
 
-  // Estado FDA
   html += '<div class="card"><div class="card-head"><div class="card-title">Estado FDA &mdash; Su Empresa</div></div><div class="card-body">';
   html += '<div style="margin-bottom:12px"><div style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">Import Alerts activos (El Salvador)</div>';
   html += '<div style="font-size:26px;font-weight:700;color:' + (DEMO_ALERTS.length ? '#d97706' : '#16a34a') + '">' + DEMO_ALERTS.length + '</div>';
@@ -165,14 +151,11 @@ function loadMyDash() {
   html += '<a href="#" onclick="showPage(\'inteligencia\')" style="display:block;font-size:13px;color:#888;padding:5px 0;text-decoration:none">Ver inteligencia de mercado &rarr;</a>';
   html += '</div></div></div>';
 
-  html += '</div></div>'; // end grid + fade-in
+  html += '</div></div>'; 
 
   document.getElementById('mi-dash-content').innerHTML = html;
 }
 
-/* ═══════════════════════════════
-   2. MIS ENVIOS
-═══════════════════════════════ */
 var myExtraShips = [];
 
 function loadMisEnvios() {
@@ -323,9 +306,6 @@ function addShipment() {
   showPage('mis-envios');
 }
 
-/* ═══════════════════════════════
-   3. MI HISTORIAL FDA
-═══════════════════════════════ */
 function loadMyFDA() {
   var company = CURRENT_USER.company;
   var myRefusals = DEMO_REFUSALS.filter(function(r) {
@@ -340,7 +320,6 @@ function loadMyFDA() {
     '<div class="kpi-cell"><div class="kpi-label">Tipos de cargo propios</div><div class="kpi-value">' + (myRefusals.length ? [...new Set(myRefusals.flatMap(function(r) { return r.charges.split(',').map(function(c) { return c.trim(); }); }))].length : 0) + '</div></div>' +
     '</div>';
 
-  // Mis rechazos
   html += '<div class="card" style="margin-bottom:20px"><div class="card-head"><div class="card-title">Rechazos FDA &mdash; ' + company + '</div><div class="card-meta">FDA Dashboard API</div></div>';
   if (!myRefusals.length) {
     html += '<div class="card-body"><div class="notice ok"><strong>Sin rechazos encontrados.</strong> No se encontraron registros de rechazo para "' + company + '" en la base de datos publica de la FDA.</div>' +
@@ -355,7 +334,6 @@ function loadMyFDA() {
   }
   html += '</div>';
 
-  // Import Alerts que aplican
   html += '<div class="card" style="margin-bottom:20px"><div class="card-head"><div class="card-title">Import Alerts Activos &mdash; El Salvador</div><div class="card-meta">Aplican a toda empresa exportadora SV</div></div><div class="card-body">';
   html += '<div class="notice warn">Estos <strong>' + DEMO_ALERTS.length + ' Import Alerts</strong> aplican a todas las empresas de El Salvador que exporten los productos listados. Verifique si sus productos estan incluidos.</div>';
   DEMO_ALERTS.slice(0,5).forEach(function(a) {
@@ -375,9 +353,6 @@ function loadMyFDA() {
   document.getElementById('mi-fda-content').innerHTML = html;
 }
 
-/* ═══════════════════════════════
-   4. INTELIGENCIA DE MERCADO
-═══════════════════════════════ */
 function loadInteligencia() {
   if (!loaded['idb']) { loaded['idb'] = 1; renderIntelDash(); }
 }
@@ -399,7 +374,6 @@ function renderIntelDash() {
 
   html += '<div class="grid-2">';
 
-  // Barras
   html += '<div class="card"><div class="card-head"><div class="card-title">Principales Causas</div></div><div class="card-body"><div class="hbar-list">';
   var colors = ['red','red','amber','amber','blue','blue','gray','gray'];
   d.charges.forEach(function(c, i) {
@@ -409,7 +383,6 @@ function renderIntelDash() {
   });
   html += '</div></div></div>';
 
-  // Columnas por ano
   html += '<div class="card"><div class="card-head"><div class="card-title">Detenciones por Ano Fiscal</div><div class="card-meta">El Salvador</div></div><div class="card-body">';
   html += '<div class="col-chart">';
   d.years.forEach(function(y, i) {
@@ -418,7 +391,6 @@ function renderIntelDash() {
   });
   html += '</div>';
 
-  // Donut categorias
   html += '<div class="donut-row" style="margin-top:16px">';
   var total = d.cats.reduce(function(s, c) { return s + c[1]; }, 0);
   var circ = 2 * Math.PI * 36, off = 0;
@@ -437,8 +409,8 @@ function renderIntelDash() {
   });
   html += '</div></div>';
 
-  html += '</div></div>'; // card body + card
-  html += '</div>'; // grid-2
+  html += '</div></div>'; 
+  html += '</div>'; 
 
   html += '<div style="font-size:11px;color:#bbb;text-align:right;font-family:\'Courier New\',monospace">datadashboard.fda.gov &middot; api-datadashboard.fda.gov/v1/import_refusals</div>';
 
@@ -502,9 +474,6 @@ function renderAlerts() {
   document.getElementById('alerts-content').innerHTML = html;
 }
 
-/* ═══════════════════════════════
-   5. REFERENCIA
-═══════════════════════════════ */
 var cdFilter = 'all';
 function loadReferencia() {
   if (loaded['cd']) return;
@@ -542,9 +511,6 @@ function setCdFilter(btn, f) {
   filterCodes();
 }
 
-/* ═══════════════════════════════
-   PERFIL
-═══════════════════════════════ */
 function loadPerfil() {
   var u = CURRENT_USER;
   document.getElementById('perfil-content').innerHTML = '<div style="max-width:600px">' +
@@ -566,6 +532,4 @@ function saveProfile() {
   document.getElementById('ub-company').textContent = CURRENT_USER.company;
   toast('Perfil actualizado.');
 }
-
-/* ── INIT ── */
 document.addEventListener('DOMContentLoaded', function() { showPage('mi-dashboard'); });

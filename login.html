@@ -15,8 +15,6 @@
       font-size: 14px;
       -webkit-font-smoothing: antialiased;
     }
-
-    /* LEFT PANEL */
     .left {
       background: #111;
       display: flex;
@@ -40,18 +38,15 @@
     .stat-v { font-size: 22px; font-weight: 700; color: #fff; }
     .stat-l { font-size: 10px; color: #555; margin-top: 3px; }
 
-    /* RIGHT PANEL */
     .right { display: flex; align-items: center; justify-content: center; padding: 48px; background: #fff; }
     .box { width: 100%; max-width: 390px; }
 
-    /* TABS */
     .tab-row { display: flex; border-bottom: 2px solid #111; margin-bottom: 26px; }
     .tab-btn { flex: 1; padding: 10px 0; border: none; background: none; font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: #999; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all .15s; }
     .tab-btn.active { color: #111; border-bottom-color: #111; }
     .tab-pane { display: none; }
     .tab-pane.active { display: block; }
 
-    /* DEMO ACCOUNTS */
     .demo-box { background: #f7f7f7; border: 1px solid #e0e0e0; border-radius: 6px; padding: 12px; margin-bottom: 20px; }
     .demo-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #999; margin-bottom: 10px; }
     .demo-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: #fff; border: 1px solid #e8e8e8; border-radius: 5px; cursor: pointer; margin-bottom: 4px; transition: border-color .1s; }
@@ -63,7 +58,6 @@
     .dr-email   { font-size: 10px; color: #999; font-family: 'Courier New', monospace; }
     .dr-badge   { font-size: 11px; font-weight: 600; }
 
-    /* FORM */
     .form-group { margin-bottom: 13px; }
     .form-label { display: block; font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: #777; margin-bottom: 5px; }
     .form-input { width: 100%; background: #f7f7f7; border: 1px solid #ddd; border-radius: 5px; padding: 9px 11px; font-family: Arial, Helvetica, sans-serif; font-size: 13px; color: #111; outline: none; transition: border-color .15s; }
@@ -72,7 +66,6 @@
     .form-hint { font-size: 10px; color: #bbb; margin-top: 4px; font-family: 'Courier New', monospace; }
     .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-    /* ROLE SELECT */
     .role-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
     .role-opt { border: 1px solid #ddd; border-radius: 5px; padding: 10px 12px; cursor: pointer; transition: all .15s; }
     .role-opt:hover { border-color: #999; }
@@ -80,19 +73,16 @@
     .role-name { font-size: 12px; font-weight: 700; color: #111; margin-bottom: 1px; }
     .role-desc { font-size: 11px; color: #999; }
 
-    /* BUTTON */
     .btn-submit { width: 100%; background: #111; color: #fff; border: none; padding: 11px; font-family: Arial, Helvetica, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: .5px; cursor: pointer; border-radius: 5px; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 14px; transition: opacity .15s; }
     .btn-submit:hover { opacity: .85; }
     .btn-submit:disabled { opacity: .5; pointer-events: none; }
     .spin { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; display: none; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* MSG */
     .msg { border-radius: 5px; padding: 9px 12px; font-size: 12px; margin-bottom: 12px; display: none; font-family: 'Courier New', monospace; border-left: 3px solid; }
     .msg.err { background: #fef2f2; border-color: #dc2626; color: #b91c1c; }
     .msg.ok  { background: #f0fdf4; border-color: #16a34a; color: #15803d; }
 
-    /* FOOT LINK */
     .foot-link { font-size: 12px; color: #999; text-align: center; }
     .foot-link a { color: #111; font-weight: 700; text-decoration: none; }
 
@@ -130,7 +120,6 @@
 
     <div class="msg" id="msg"></div>
 
-    <!-- LOGIN -->
     <div class="tab-pane active" id="tab-login">
       <div class="demo-box">
         <div class="demo-label">Cuentas de demostracion &mdash; contrasena: 123456</div>
@@ -168,7 +157,6 @@
       <div class="foot-link">Sin cuenta? <a href="#" onclick="showTab('register')">Registrese aqui</a></div>
     </div>
 
-    <!-- REGISTER -->
     <div class="tab-pane" id="tab-register">
       <div style="margin-bottom:16px">
         <div style="font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#777;margin-bottom:8px">Tipo de cuenta</div>
@@ -208,7 +196,6 @@
 </div>
 
 <script>
-// Demo users - datos fijos, sin backend
 const USERS = [
   { id:'1', email:'alimentos@tradeflow.sv',  pass:'123456', name:'Carlos Mendoza',  company:'Alimentos Del Mar S.A.',  ior:'SV-2021-00412', role:'importer' },
   { id:'2', email:'cafe@tradeflow.sv',        pass:'123456', name:'Maria Lopez',     company:'Cafe Organico SV',        ior:'SV-2019-00189', role:'importer' },
@@ -219,7 +206,6 @@ const USERS = [
 
 var selectedRole = 'importer';
 
-// Redirect if already logged in
 if (localStorage.getItem('tf_user')) window.location.href = 'index.html';
 
 function showTab(tab) {
@@ -264,7 +250,6 @@ function doLogin() {
 
   setLoading('btn-login', 'sp-login', 'txt-login', true, 'Conectando...');
 
-  // Simular delay de red
   setTimeout(function() {
     var user = null;
     for (var i = 0; i < USERS.length; i++) {

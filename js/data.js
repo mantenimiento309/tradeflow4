@@ -1,9 +1,3 @@
-/* ─────────────────────────────────────────
-   TradeFlow SV — data.js
-   Todos los datos demo hardcodeados
-   Sin backend, sin Supabase, sin API keys
-───────────────────────────────────────── */
-
 var DEMO_SHIPMENTS = {
   '1': [
     {
