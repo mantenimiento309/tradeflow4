@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TradeFlow SV &mdash; Acceder</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f2f2f2;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* LEFT PANEL */
+    .left {
+      background: #111;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 48px;
+    }
+    .brand { font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 52px; }
+    .brand sup { font-size: 9px; font-weight: 400; color: #888; vertical-align: super; margin-left: 1px; letter-spacing: 1px; }
+    .headline { font-size: 32px; font-weight: 700; color: #fff; line-height: 1.2; margin-bottom: 14px; }
+    .subtext { font-size: 14px; color: #888; line-height: 1.7; max-width: 340px; }
+    .feature-list { margin-top: 44px; border-top: 1px solid #2a2a2a; }
+    .feat { padding: 13px 0; border-bottom: 1px solid #2a2a2a; display: flex; gap: 14px; }
+    .feat-n { font-size: 10px; color: #444; flex-shrink: 0; margin-top: 1px; font-family: 'Courier New', monospace; }
+    .feat-title { font-size: 13px; font-weight: 600; color: #ccc; margin-bottom: 1px; }
+    .feat-desc  { font-size: 12px; color: #666; }
+    .stats { display: flex; gap: 1px; }
+    .stat { flex: 1; background: #1a1a1a; border: 1px solid #222; padding: 14px 16px; }
+    .stat:first-child { border-radius: 6px 0 0 6px; }
+    .stat:last-child  { border-radius: 0 6px 6px 0; }
+    .stat-v { font-size: 22px; font-weight: 700; color: #fff; }
+    .stat-l { font-size: 10px; color: #555; margin-top: 3px; }
+
+    /* RIGHT PANEL */
+    .right { display: flex; align-items: center; justify-content: center; padding: 48px; background: #fff; }
+    .box { width: 100%; max-width: 390px; }
+
+    /* TABS */
+    .tab-row { display: flex; border-bottom: 2px solid #111; margin-bottom: 26px; }
+    .tab-btn { flex: 1; padding: 10px 0; border: none; background: none; font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: #999; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all .15s; }
+    .tab-btn.active { color: #111; border-bottom-color: #111; }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    /* DEMO ACCOUNTS */
+    .demo-box { background: #f7f7f7; border: 1px solid #e0e0e0; border-radius: 6px; padding: 12px; margin-bottom: 20px; }
+    .demo-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #999; margin-bottom: 10px; }
+    .demo-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: #fff; border: 1px solid #e8e8e8; border-radius: 5px; cursor: pointer; margin-bottom: 4px; transition: border-color .1s; }
+    .demo-row:last-child { margin-bottom: 0; }
+    .demo-row:hover { border-color: #ccc; }
+    .dr-left { display: flex; align-items: center; gap: 9px; }
+    .dr-av { width: 26px; height: 26px; background: #111; color: #fff; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+    .dr-company { font-size: 12px; font-weight: 600; color: #111; }
+    .dr-email   { font-size: 10px; color: #999; font-family: 'Courier New', monospace; }
+    .dr-badge   { font-size: 11px; font-weight: 600; }
+
+    /* FORM */
+    .form-group { margin-bottom: 13px; }
+    .form-label { display: block; font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: #777; margin-bottom: 5px; }
+    .form-input { width: 100%; background: #f7f7f7; border: 1px solid #ddd; border-radius: 5px; padding: 9px 11px; font-family: Arial, Helvetica, sans-serif; font-size: 13px; color: #111; outline: none; transition: border-color .15s; }
+    .form-input:focus { border-color: #111; background: #fff; }
+    .form-input::placeholder { color: #bbb; }
+    .form-hint { font-size: 10px; color: #bbb; margin-top: 4px; font-family: 'Courier New', monospace; }
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    /* ROLE SELECT */
+    .role-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+    .role-opt { border: 1px solid #ddd; border-radius: 5px; padding: 10px 12px; cursor: pointer; transition: all .15s; }
+    .role-opt:hover { border-color: #999; }
+    .role-opt.sel { border-color: #111; background: #f7f7f7; }
+    .role-name { font-size: 12px; font-weight: 700; color: #111; margin-bottom: 1px; }
+    .role-desc { font-size: 11px; color: #999; }
+
+    /* BUTTON */
+    .btn-submit { width: 100%; background: #111; color: #fff; border: none; padding: 11px; font-family: Arial, Helvetica, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: .5px; cursor: pointer; border-radius: 5px; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 14px; transition: opacity .15s; }
+    .btn-submit:hover { opacity: .85; }
+    .btn-submit:disabled { opacity: .5; pointer-events: none; }
+    .spin { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* MSG */
+    .msg { border-radius: 5px; padding: 9px 12px; font-size: 12px; margin-bottom: 12px; display: none; font-family: 'Courier New', monospace; border-left: 3px solid; }
+    .msg.err { background: #fef2f2; border-color: #dc2626; color: #b91c1c; }
+    .msg.ok  { background: #f0fdf4; border-color: #16a34a; color: #15803d; }
+
+    /* FOOT LINK */
+    .foot-link { font-size: 12px; color: #999; text-align: center; }
+    .foot-link a { color: #111; font-weight: 700; text-decoration: none; }
+
+    @media (max-width: 768px) { body { grid-template-columns: 1fr; } .left { display: none; } }
+  </style>
+</head>
+<body>
+
+<div class="left">
+  <div>
+    <div class="brand">TradeFlow<sup>SV</sup></div>
+    <div class="headline">Inteligencia de<br>importaciones<br>en una pantalla.</div>
+    <div class="subtext">Conecte sus cuentas CBP ACE y FDA OASIS. Visualice el estado de sus cargamentos sin consultar 20 sistemas distintos.</div>
+    <div class="feature-list">
+      <div class="feat"><div class="feat-n">01</div><div><div class="feat-title">CBP ACE Portal</div><div class="feat-desc">Estado de entries, aranceles y holds en tiempo real.</div></div></div>
+      <div class="feat"><div class="feat-n">02</div><div><div class="feat-title">FDA OASIS / ITACS</div><div class="feat-desc">Prior Notices, detenciones y cargos de refusal.</div></div></div>
+      <div class="feat"><div class="feat-n">03</div><div><div class="feat-title">MarineTraffic AIS</div><div class="feat-desc">Posicion en tiempo real del barco que lleva su carga.</div></div></div>
+      <div class="feat"><div class="feat-n">04</div><div><div class="feat-title">Import Alerts FDA</div><div class="feat-desc">Alerta inmediata si su empresa aparece en lista negra.</div></div></div>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="stat-v">160+</div><div class="stat-l">Codigos de refusal</div></div>
+    <div class="stat"><div class="stat-v">16</div><div class="stat-l">Import Alerts SV</div></div>
+    <div class="stat"><div class="stat-v">FDA</div><div class="stat-l">API oficial</div></div>
+  </div>
+</div>
+
+<div class="right">
+  <div class="box">
+
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="showTab('login')">Iniciar sesion</button>
+      <button class="tab-btn" onclick="showTab('register')">Crear cuenta</button>
+    </div>
+
+    <div class="msg" id="msg"></div>
+
+    <!-- LOGIN -->
+    <div class="tab-pane active" id="tab-login">
+      <div class="demo-box">
+        <div class="demo-label">Cuentas de demostracion &mdash; contrasena: 123456</div>
+        <div class="demo-row" onclick="fill('alimentos@tradeflow.sv')">
+          <div class="dr-left"><div class="dr-av">A</div><div><div class="dr-company">Alimentos Del Mar S.A.</div><div class="dr-email">alimentos@tradeflow.sv</div></div></div>
+          <div class="dr-badge" style="color:#dc2626">FDA Hold</div>
+        </div>
+        <div class="demo-row" onclick="fill('cafe@tradeflow.sv')">
+          <div class="dr-left"><div class="dr-av">C</div><div><div class="dr-company">Cafe Organico SV</div><div class="dr-email">cafe@tradeflow.sv</div></div></div>
+          <div class="dr-badge" style="color:#16a34a">Liberado</div>
+        </div>
+        <div class="demo-row" onclick="fill('textiles@tradeflow.sv')">
+          <div class="dr-left"><div class="dr-av">T</div><div><div class="dr-company">Textiles San Miguel</div><div class="dr-email">textiles@tradeflow.sv</div></div></div>
+          <div class="dr-badge" style="color:#2563eb">En Transito</div>
+        </div>
+        <div class="demo-row" onclick="fill('admin@tradeflow.sv')">
+          <div class="dr-left"><div class="dr-av">AD</div><div><div class="dr-company">Admin TradeFlow</div><div class="dr-email">admin@tradeflow.sv</div></div></div>
+          <div class="dr-badge" style="color:#777">Admin</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Correo electronico</label>
+        <input type="email" class="form-input" id="l-email" placeholder="empresa@correo.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Contrasena</label>
+        <input type="password" class="form-input" id="l-pass" placeholder="Minimo 6 caracteres">
+        <div class="form-hint">Demo: contrasena 123456</div>
+      </div>
+      <button class="btn-submit" id="btn-login" onclick="doLogin()">
+        <div class="spin" id="sp-login"></div>
+        <span id="txt-login">Entrar</span>
+      </button>
+      <div class="foot-link">Sin cuenta? <a href="#" onclick="showTab('register')">Registrese aqui</a></div>
+    </div>
+
+    <!-- REGISTER -->
+    <div class="tab-pane" id="tab-register">
+      <div style="margin-bottom:16px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#777;margin-bottom:8px">Tipo de cuenta</div>
+        <div class="role-row">
+          <div class="role-opt sel" id="role-importer" onclick="selRole('importer')">
+            <div class="role-name">Importador</div>
+            <div class="role-desc">Empresa exportadora SV</div>
+          </div>
+          <div class="role-opt" id="role-broker" onclick="selRole('broker')">
+            <div class="role-name">Broker Aduanal</div>
+            <div class="role-desc">Agente de aduanas</div>
+          </div>
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-group"><label class="form-label">Nombre</label><input type="text" class="form-input" id="r-name" placeholder="Carlos Mendoza"></div>
+        <div class="form-group"><label class="form-label">Empresa</label><input type="text" class="form-input" id="r-company" placeholder="Mi Empresa S.A."></div>
+      </div>
+      <div class="form-group"><label class="form-label">Correo electronico</label><input type="email" class="form-input" id="r-email" placeholder="tu@empresa.com"></div>
+      <div class="form-group">
+        <label class="form-label">Numero IOR (opcional)</label>
+        <input type="text" class="form-input" id="r-ior" placeholder="SV-2024-00000">
+        <div class="form-hint">Importer of Record &mdash; asignado por CBP</div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-group"><label class="form-label">Contrasena</label><input type="password" class="form-input" id="r-pass" placeholder="Min. 6 caracteres"></div>
+        <div class="form-group"><label class="form-label">Confirmar</label><input type="password" class="form-input" id="r-pass2" placeholder="Repetir"></div>
+      </div>
+      <button class="btn-submit" id="btn-reg" onclick="doRegister()">
+        <div class="spin" id="sp-reg"></div>
+        <span id="txt-reg">Crear cuenta</span>
+      </button>
+      <div class="foot-link">Ya tiene cuenta? <a href="#" onclick="showTab('login')">Iniciar sesion</a></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// Demo users - datos fijos, sin backend
+const USERS = [
+  { id:'1', email:'alimentos@tradeflow.sv',  pass:'123456', name:'Carlos Mendoza',  company:'Alimentos Del Mar S.A.',  ior:'SV-2021-00412', role:'importer' },
+  { id:'2', email:'cafe@tradeflow.sv',        pass:'123456', name:'Maria Lopez',     company:'Cafe Organico SV',        ior:'SV-2019-00189', role:'importer' },
+  { id:'3', email:'textiles@tradeflow.sv',    pass:'123456', name:'Roberto Silva',   company:'Textiles San Miguel',     ior:'SV-2022-00671', role:'importer' },
+  { id:'4', email:'naturales@tradeflow.sv',   pass:'123456', name:'Ana Ramos',       company:'Productos Naturales SV',  ior:'SV-2023-00834', role:'importer' },
+  { id:'5', email:'admin@tradeflow.sv',       pass:'123456', name:'Admin TradeFlow', company:'TradeFlow SV',            ior:null,            role:'admin'    },
+];
+
+var selectedRole = 'importer';
+
+// Redirect if already logged in
+if (localStorage.getItem('tf_user')) window.location.href = 'index.html';
+
+function showTab(tab) {
+  document.querySelectorAll('.tab-pane').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.querySelectorAll('.tab-btn')[tab === 'login' ? 0 : 1].classList.add('active');
+  showMsg('', '');
+}
+
+function showMsg(type, text) {
+  var box = document.getElementById('msg');
+  if (!text) { box.style.display = 'none'; return; }
+  box.className = 'msg ' + type;
+  box.textContent = text;
+  box.style.display = 'block';
+}
+
+function setLoading(btnId, spId, txtId, loading, txt) {
+  document.getElementById(btnId).disabled = loading;
+  document.getElementById(spId).style.display = loading ? 'block' : 'none';
+  document.getElementById(txtId).textContent = txt;
+}
+
+function fill(email) {
+  document.getElementById('l-email').value = email;
+  document.getElementById('l-pass').value = '123456';
+}
+
+function selRole(role) {
+  selectedRole = role;
+  document.getElementById('role-importer').classList.toggle('sel', role === 'importer');
+  document.getElementById('role-broker').classList.toggle('sel', role === 'broker');
+}
+
+function doLogin() {
+  var email = document.getElementById('l-email').value.trim();
+  var pass  = document.getElementById('l-pass').value;
+  showMsg('', '');
+
+  if (!email || !pass) { showMsg('err', 'Ingrese correo y contrasena.'); return; }
+
+  setLoading('btn-login', 'sp-login', 'txt-login', true, 'Conectando...');
+
+  // Simular delay de red
+  setTimeout(function() {
+    var user = null;
+    for (var i = 0; i < USERS.length; i++) {
+      if (USERS[i].email === email && USERS[i].pass === pass) { user = USERS[i]; break; }
+    }
+    if (!user) {
+      showMsg('err', 'Correo o contrasena incorrectos.');
+      setLoading('btn-login', 'sp-login', 'txt-login', false, 'Entrar');
+      return;
+    }
+    localStorage.setItem('tf_user', JSON.stringify(user));
+    setLoading('btn-login', 'sp-login', 'txt-login', true, 'Cargando dashboard...');
+    setTimeout(function() { window.location.href = 'index.html'; }, 400);
+  }, 600);
+}
+
+function doRegister() {
+  var name    = document.getElementById('r-name').value.trim();
+  var company = document.getElementById('r-company').value.trim();
+  var email   = document.getElementById('r-email').value.trim();
+  var pass    = document.getElementById('r-pass').value;
+  var pass2   = document.getElementById('r-pass2').value;
+  var ior     = document.getElementById('r-ior').value.trim();
+  showMsg('', '');
+
+  if (!name || !company || !email || !pass) { showMsg('err', 'Complete todos los campos requeridos.'); return; }
+  if (pass !== pass2) { showMsg('err', 'Las contrasenas no coinciden.'); return; }
+  if (pass.length < 6) { showMsg('err', 'La contrasena debe tener al menos 6 caracteres.'); return; }
+
+  for (var i = 0; i < USERS.length; i++) {
+    if (USERS[i].email === email) { showMsg('err', 'Este correo ya esta registrado.'); return; }
+  }
+
+  setLoading('btn-reg', 'sp-reg', 'txt-reg', true, 'Creando cuenta...');
+
+  setTimeout(function() {
+    var newUser = { id: String(Date.now()), email: email, pass: pass, name: name, company: company, ior: ior || null, role: selectedRole };
+    USERS.push(newUser);
+    localStorage.setItem('tf_user', JSON.stringify(newUser));
+    showMsg('ok', 'Cuenta creada. Redirigiendo...');
+    setTimeout(function() { window.location.href = 'index.html'; }, 800);
+  }, 700);
+}
+</script>
+</body>
+</html>

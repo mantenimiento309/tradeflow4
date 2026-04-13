@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TradeFlow SV</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<div class="user-bar">
+  <div class="ub-left">
+    <div class="ub-item"><span class="ub-live">&#9679;</span><span>Conectado:</span><span class="ub-name" id="ub-company">&#8212;</span></div>
+    <div class="ub-sep"></div>
+    <div class="ub-item"><span>IOR:</span><span id="ub-ior" style="color:#888">&#8212;</span></div>
+    <div class="ub-sep"></div>
+    <div class="ub-item"><span>CBP ACE</span><span class="ub-live">Conectado</span></div>
+    <div class="ub-item"><span>FDA OASIS</span><span class="ub-live">Conectado</span></div>
+  </div>
+  <div class="ub-right">
+    <a href="#" onclick="showPage('perfil')">Mi perfil</a>
+    <a href="login.html" onclick="localStorage.removeItem('tf_user')">Cerrar sesion</a>
+  </div>
+</div>
+
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-mark"><span>TF</span></div>
+    <div class="logo-name">TradeFlow<sup>SV</sup></div>
+  </div>
+  <nav class="nav">
+    <button class="nav-item active" data-page="mi-dashboard" onclick="showPage('mi-dashboard')">Mi Dashboard</button>
+    <button class="nav-item" data-page="mis-envios"    onclick="showPage('mis-envios')">Mis Envios</button>
+    <button class="nav-item" data-page="mi-fda"        onclick="showPage('mi-fda')">Mi Historial FDA</button>
+    <button class="nav-item" data-page="inteligencia"  onclick="showPage('inteligencia')">Inteligencia de Mercado</button>
+    <button class="nav-item" data-page="referencia"    onclick="showPage('referencia')">Referencia</button>
+  </nav>
+  <div class="topbar-right">
+    <button class="btn-primary" onclick="openModal('modal-add')">+ Nuevo Envio</button>
+    <div class="api-pill">FDA API</div>
+  </div>
+</div>
+
+<!-- MI DASHBOARD -->
+<div class="page active" id="page-mi-dashboard">
+  <div class="page-wrap">
+    <div class="masthead">
+      <div>
+        <div class="masthead-eyebrow">Panel de Control</div>
+        <div class="masthead-title" id="dash-title">Mi Dashboard</div>
+        <div class="masthead-sub" id="dash-date"></div>
+      </div>
+      <button class="btn-primary" onclick="openModal('modal-add')">+ Registrar Envio</button>
+    </div>
+    <div id="mi-dash-content"><div class="loading"><div class="spinner"></div>Cargando...</div></div>
+  </div>
+</div>
+
+<!-- MIS ENVIOS -->
+<div class="page" id="page-mis-envios">
+  <div class="page-wrap">
+    <div class="masthead">
+      <div>
+        <div class="masthead-eyebrow">Seguimiento</div>
+        <div class="masthead-title">Mis Envios</div>
+        <div class="masthead-sub" id="mis-sub"></div>
+      </div>
+      <button class="btn-primary" onclick="openModal('modal-add')">+ Registrar Envio</button>
+    </div>
+    <div id="mis-content"><div class="loading"><div class="spinner"></div>Cargando...</div></div>
+  </div>
+</div>
+
+<!-- MI HISTORIAL FDA -->
+<div class="page" id="page-mi-fda">
+  <div class="page-wrap">
+    <div class="masthead">
+      <div>
+        <div class="masthead-eyebrow">Historial Regulatorio</div>
+        <div class="masthead-title">Mi Historial FDA</div>
+        <div class="masthead-sub">Rechazos e Import Alerts vinculados a su empresa &mdash; FDA Dashboard API</div>
+      </div>
+    </div>
+    <div id="mi-fda-content"><div class="loading"><div class="spinner"></div>Cargando...</div></div>
+  </div>
+</div>
+
+<!-- INTELIGENCIA DE MERCADO -->
+<div class="page" id="page-inteligencia">
+  <div class="page-wrap">
+    <div class="masthead">
+      <div>
+        <div class="masthead-eyebrow">Contexto de Industria</div>
+        <div class="masthead-title">Inteligencia de Mercado &mdash; El Salvador</div>
+        <div class="masthead-sub">datadashboard.fda.gov &middot; accessdata.fda.gov</div>
+      </div>
+    </div>
+    <div class="sub-tabs">
+      <button class="sub-tab active" onclick="showSub('intel-dash',this)">Dashboard FDA</button>
+      <button class="sub-tab" onclick="showSub('intel-rechazos',this)">Rechazos SV</button>
+      <button class="sub-tab" onclick="showSub('intel-alerts',this)">Import Alerts</button>
+    </div>
+    <div class="sub-pane active" id="sub-intel-dash">
+      <div id="dash-content"></div>
+    </div>
+    <div class="sub-pane" id="sub-intel-rechazos">
+      <div class="search-row" style="margin-top:16px">
+        <input class="search-input" id="rf-search" placeholder="Buscar empresa, producto o cargo de refusal..." oninput="filterRf()">
+        <button class="filter-btn active" onclick="setRfFilter(this,'all')">Todos</button>
+        <button class="filter-btn" onclick="setRfFilter(this,'food')">Alimentos</button>
+        <button class="filter-btn" onclick="setRfFilter(this,'drug')">Medicamentos</button>
+        <button class="filter-btn" onclick="setRfFilter(this,'cosm')">Cosmeticos</button>
+      </div>
+      <div class="count-row">
+        <span>Mostrando <span id="rf-count">0</span> registros &mdash; Fuente: FDA API</span>
+        <a href="https://datadashboard.fda.gov/oii/cd/imprefusals.htm" target="_blank">Ver en FDA.gov</a>
+      </div>
+      <div class="card">
+        <table class="data-table">
+          <thead><tr><th>Shipment ID</th><th>Empresa</th><th>Categoria</th><th>Producto</th><th>Cargos de Refusal</th><th>Fecha</th></tr></thead>
+          <tbody id="rf-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="sub-pane" id="sub-intel-alerts">
+      <div id="alerts-content" style="margin-top:16px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- REFERENCIA -->
+<div class="page" id="page-referencia">
+  <div class="page-wrap">
+    <div class="masthead">
+      <div>
+        <div class="masthead-eyebrow">Consulta Tecnica</div>
+        <div class="masthead-title">Codigos de Refusal &rarr; eCFR Title 21</div>
+        <div class="masthead-sub">ACT_SECTION_CHARGES.CSV &middot; 70+ codigos con descripcion en espanol</div>
+      </div>
+    </div>
+    <div class="search-row">
+      <input class="search-input" id="cd-search" placeholder="Buscar por codigo, seccion o descripcion..." oninput="filterCodes()">
+      <button class="filter-btn active" onclick="setCdFilter(this,'all')">Todos</button>
+      <button class="filter-btn" onclick="setCdFilter(this,'ADULTERATION')">Adulteracion</button>
+      <button class="filter-btn" onclick="setCdFilter(this,'MISBRANDING')">Misbranding</button>
+    </div>
+    <div class="count-row">
+      <span>Mostrando <span id="cd-count">0</span> codigos</span>
+      <a href="https://www.ecfr.gov/current/title-21" target="_blank">Ver eCFR Title 21 completo &rarr;</a>
+    </div>
+    <div class="card">
+      <table class="data-table">
+        <thead><tr><th>Codigo</th><th>Seccion Legal</th><th>Categoria</th><th>Descripcion</th><th>CFR</th></tr></thead>
+        <tbody id="cd-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- PERFIL -->
+<div class="page" id="page-perfil">
+  <div class="page-wrap">
+    <div class="masthead">
+      <div>
+        <div class="masthead-eyebrow">Cuenta</div>
+        <div class="masthead-title">Mi Perfil</div>
+      </div>
+    </div>
+    <div id="perfil-content"></div>
+  </div>
+</div>
+
+<!-- MODAL NUEVO ENVIO -->
+<div class="overlay" id="modal-add">
+  <div class="modal">
+    <div class="modal-head">
+      <div><div class="modal-title">Registrar Nuevo Envio</div><div class="modal-sub">Ingrese los datos del cargamento</div></div>
+      <button class="modal-close" onclick="closeModal('modal-add')">&#215;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Entry Number *</label><input class="form-input" id="s-entry" placeholder="EL-2025-000000"></div>
+        <div class="form-group"><label class="form-label">Bill of Lading</label><input class="form-input" id="s-bl" placeholder="MSCUSV000000"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Producto *</label><input class="form-input" id="s-product" placeholder="Camarones congelados — 2,400 kg"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Barco</label><input class="form-input" id="s-vessel" placeholder="MSC ELENA"></div>
+        <div class="form-group"><label class="form-label">Contenedor</label><input class="form-input" id="s-container" placeholder="MSCU0000000"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Puerto Origen</label><input class="form-input" id="s-origin" placeholder="Puerto Acajutla, SV"></div>
+        <div class="form-group"><label class="form-label">Puerto Destino</label><input class="form-input" id="s-dest" placeholder="Port of Los Angeles, CA"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Fecha Salida (ETD)</label><input type="date" class="form-input" id="s-etd"></div>
+        <div class="form-group"><label class="form-label">Fecha Llegada (ETA)</label><input type="date" class="form-input" id="s-eta"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Broker Aduanal</label><input class="form-input" id="s-broker" placeholder="Global Customs Brokers LLC"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-add')">Cancelar</button>
+      <button class="btn-primary" onclick="addShipment()">Registrar Envio</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
