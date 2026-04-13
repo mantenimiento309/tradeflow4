@@ -399,3 +399,20 @@ img, video, canvas, svg {
 .card {
   overflow-x: auto;
 }
+
+
+
+.modal-body .table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+.modal .data-table {
+  min-width: 600px; /* o menos si quieres */
+}
+.modal-body {
+  overflow-x: hidden;
+}
+
+.modal-body > * {
+  max-width: 100%;
+}

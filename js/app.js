@@ -383,7 +383,7 @@ function renderIntelDash() {
   });
   html += '</div></div></div>';
 
-  html += '<div class="card"><div class="card-head"><div class="card-title">Detenciones por Ano Fiscal</div><div class="card-meta">El Salvador</div></div><div class="card-body">';
+  html += '<div class="card"><div class="card-head"><div class="card-title">Detenciones por Año Fiscal</div><div class="card-meta">El Salvador</div></div><div class="card-body">';
   html += '<div class="col-chart">';
   d.years.forEach(function(y, i) {
     var h = Math.round((y[1] / maxY) * 100);
